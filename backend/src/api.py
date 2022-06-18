@@ -31,31 +31,44 @@ db_drop_and_create_all()
 '''
 
 
-@app.route('/drinks')
+@app.route('/drinks', methods=['GET'], endpoint='get_drinks' )
 def drinks():
     try:
-        # Query drinks
+        # Query for drinks
         drinks = Drink.query.all()
-        # If drink has data
-        if drinks:
-            # Loop over drinks and return drink.short()
-            for drink in drinks:
-                drink_list = drink.short()
-            return jsonify({
-                "success": True,
-                "drinks": drink_list
-            }), 200
-        else:
-            # If no drink, return error
+
+        try:
+            # Check if drinks is iterable
+            iterator = iter(drinks)
+            print(iterator = iter(drinks))
+        except TypeError:
             return jsonify({
                 "success": False,
-                "error": 'No drink found'
-            }), 404
+                # Query for available drinks and display it 
+                "drinks": 'Can\'t display drinks, recipe value is null'
+            }), 422
+        else:
+            # If drink has data
+            if drinks:
+                return jsonify({
+                    "success": True,
+                    # Query for available drinks and display it 
+                    "drinks": [drink.short() for drink in Drink.query.all()]
+                }), 200
+            else:
+                # If no drink available
+                return jsonify({
+                    "success": False,
+                    "error": 'No drink found'
+                }), 404
+
     except Exception as e:
+        # If there is an error querying the database
         return jsonify({
             "success": False,
             "error": e
         }), 422
+
 
 
 '''
@@ -69,26 +82,28 @@ def drinks():
 '''
 
 
-@app.route('/drinks-detail', endpoint='drinks_detail')
+@app.route('/drinks-detail', methods=['GET'], endpoint='drinks_detail')
+# Only users with the permission can get drink details
 @requires_auth('get:drinks-detail')
 def drinks_detail(f):
     try:
+        # Query for drinks
         drinks = Drink.query.all()
-
+        # If drink has data
         if drinks:
-            for drink in drinks:
-                drink_list = [drink.long()]
-
             return jsonify({
                 "success": True,
-                "drinks": drink_list
+                # Query for available drinks and display it
+                "drinks": [drink.long() for drink in drinks]
             }), 200
         else:
+            # If no drink available
             return jsonify({
                 "success": False,
                 "error": 'No drink found'
             }), 404
     except Exception as e:
+        # If there is an error querying the database
         return jsonify({
             "success": False,
             "error": e
@@ -111,7 +126,7 @@ def drinks_detail(f):
 @app.route('/drinks', methods=['POST'], endpoint='post_drinks')
 @requires_auth('post:drinks')
 def drinks(f):
-    # Get data from the request
+    # Get data from the request body
     body = request.form or request.json or request.data
     title = body.get('title')
     recipe_body = body.get('recipe')
@@ -119,7 +134,7 @@ def drinks(f):
     if recipe_body == str:
         recipe = recipe_body
     else:
-        # if it isn't, convert it to a
+        # if recipie isn't, convert it to a string format
         recipe = json.dumps(recipe_body)
 
     drink = Drink(title=title, recipe=recipe)
@@ -128,7 +143,7 @@ def drinks(f):
         drink.insert()
         return jsonify({
             'success': True,
-            'drink': drink.long()
+            'drink': [drink.long()]
         }), 200
     except Exception as e:
         return jsonify({
@@ -214,14 +229,14 @@ def drinks(f, id):
                 "error": 'No drink of that id could be found'
             }), 404
         else:
-            # If it exists
+            # If data exists in database
             # Delete data from database
             drink.delete()
             return jsonify({
                 "success": True,
                 "delete": id
             }), 200
-    # If there's a problem trying all these
+    # If there's a problem trying all these, return error
     except Exception as e:
         return jsonify({
             'success': False,

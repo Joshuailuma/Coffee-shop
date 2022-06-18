@@ -73,7 +73,8 @@ def get_token_auth_header():
         permission: string permission (i.e. 'post:drink')
         payload: decoded jwt payload
 
-    it should raise an AuthError if permissions are not included in the payload
+    it should raise an AuthError if permissions are not
+    included in the payload
         !!NOTE check your RBAC settings in Auth0
     it should raise an AuthError if the requested permission string
     is not in the payload permissions array
@@ -154,8 +155,7 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': 'Incorrect claims. Please
-                + 'check the audience and issuer.'
+                'description': 'Incorrect claims. Please check the audience and issuer.'
             }, 401)
         except Exception:
             raise AuthError({
