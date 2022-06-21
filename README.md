@@ -20,4 +20,4 @@ The `./backend` directory contains a Flask server with SQLAlchemy module. You wi
 
 The `./frontend` directory contains a complete Ionic frontend to consume the data from the Flask server. Start the frontend server
 
-[View the README.md within ./frontend for more details.](./frontend/README.md)
+[View the README.md within ./frontend for more details.](./frontend/README.md).
