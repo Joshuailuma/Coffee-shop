@@ -31,7 +31,7 @@ db_drop_and_create_all()
 '''
 
 
-@app.route('/drinks', methods=['GET'], endpoint='get_drinks' )
+@app.route('/drinks', methods=['GET'], endpoint='get_drinks')
 def drinks():
     try:
         # Query for drinks
@@ -40,11 +40,11 @@ def drinks():
         try:
             # Check if drinks is iterable
             iterator = iter(drinks)
-            print(iterator = iter(drinks))
+            print(iterator)
         except TypeError:
             return jsonify({
                 "success": False,
-                # Query for available drinks and display it 
+                # Query for available drinks and display it
                 "drinks": 'Can\'t display drinks, recipe value is null'
             }), 422
         else:
@@ -52,7 +52,7 @@ def drinks():
             if drinks:
                 return jsonify({
                     "success": True,
-                    # Query for available drinks and display it 
+                    # Query for available drinks and display it
                     "drinks": [drink.short() for drink in Drink.query.all()]
                 }), 200
             else:
@@ -68,7 +68,6 @@ def drinks():
             "success": False,
             "error": e
         }), 422
-
 
 
 '''
@@ -306,3 +305,5 @@ def auth_error(err):
     response = jsonify(err.error)
     response.status_code = err.status_code
     return response
+
+    

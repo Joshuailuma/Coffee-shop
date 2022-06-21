@@ -15,7 +15,7 @@ CORS(app)
 '''
 @TODO uncomment the following line to initialize the datbase [DONE]
 '''
-# db_drop_and_create_all()
+db_drop_and_create_all()
 
 ## ROUTES
 '''
