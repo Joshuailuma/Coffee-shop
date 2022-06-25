@@ -1,5 +1,7 @@
 # Coffee Shop Full Stack
 
+A web app that manages buying and selling of coffee drink
+
 This web application:
 
 1. Displays graphics representing the ratios of ingredients in each drink.
